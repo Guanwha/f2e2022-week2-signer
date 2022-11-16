@@ -1,0 +1,14 @@
+@layer base {
+  /******
+  * global
+  ******/
+  html, body, #app {
+    @apply w-full h-full;
+    @apply bg-bg;
+  }
+  html {
+    scroll-behavior: smooth;
+    @apply font-sans;
+  }
+}
+
