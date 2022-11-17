@@ -6,10 +6,12 @@
 
   @mixin btn-anim() {
     transition: all .15s ease;
+    &:hover {
+      @apply opacity-70;
+    }
   }
   .btn-anim {
     @include btn-anim;
   }
-
 }
 

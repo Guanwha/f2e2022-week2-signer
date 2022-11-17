@@ -5,6 +5,7 @@
     /* overflow: hidden; */
   }
 
+  /** flex *****/
   @mixin flex-r {
     display: flex;
     flex-direction: row;
@@ -303,6 +304,11 @@
   }
   .grow-3 {
     flex-grow: 3;
+  }
+
+  /** relative absolute *****/
+  .absolute-center {
+    @apply absolute inset-1/2 -translate-x-1/2 -translate-y-1/2;
   }
 
 
