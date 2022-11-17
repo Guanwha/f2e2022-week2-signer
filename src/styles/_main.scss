@@ -4,6 +4,7 @@
 
 @layer utilities {
 
+  /** button *****/
   @mixin btn-anim() {
     transition: all .15s ease;
     &:hover {
@@ -12,6 +13,11 @@
   }
   .btn-anim {
     @include btn-anim;
+  }
+
+  /** background *****/
+  .bg-gradient-primary {
+    @apply bg-gradient-to-b from-gradient-top to-gradient-bottom;
   }
 }
 
