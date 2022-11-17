@@ -10,7 +10,7 @@
       <!-- file region -->
       <div class="w-full h-[57vh] bg-white border-2 border-dashed border-gray rounded-[26px] p-8 relative">
         <img class="absolute top-[10%] inset-x-1/2 -translate-x-1/2 h-[28.6%]" src="@/assets/home/img_file.png" alt="image">
-        <div class="absolute-center w-full flex-ccc gap-2 pt-16">
+        <div class="z-10 absolute-center w-full flex-ccc gap-2 pt-16">
           <button type="button" class="btn-anim rounded-2xl px-16 py-4 bg-gradient-primary text-white text-lg" >選擇檔案</button>
           <p class="text-primary">(限10MB 內的PDF或JPG檔)</p>
         </div>
@@ -38,7 +38,7 @@
       <!-- file region -->
       <div class="absolute top-[13%] right-[15%] right-0 w-[32.6%] h-[52%] bg-white border-2 border-dashed border-gray rounded-[26px] p-8">
         <img class="absolute top-[10%] inset-x-1/2 -translate-x-1/2 h-[28.6%]" src="@/assets/home/img_file.png" alt="image">
-        <div class="absolute-center w-full flex-ccc gap-2 pt-16">
+        <div class="z-10 absolute-center w-full flex-ccc gap-2 pt-16">
           <button type="button" class="btn-anim rounded-2xl px-16 py-4 bg-gradient-primary text-white text-lg" >選擇檔案</button>
           <p class="text-primary">(限10MB 內的PDF或JPG檔)</p>
         </div>
