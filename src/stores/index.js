@@ -4,6 +4,10 @@ import pdf from './modules/pdf'
 const debug = process.env.NODE_ENV !== 'production'
 
 export default createStore({
+  state: {
+    loadingMsg: '上傳中...',
+    isLoading: false,
+  },
   modules: {
     pdf,
   },
