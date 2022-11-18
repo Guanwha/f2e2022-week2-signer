@@ -1,13 +1,17 @@
-import { createStore, createLogger } from 'vuex'
-import pdf from './modules/pdf'
+import { createStore, createLogger } from 'vuex';
+import actions from './actions';
+import mutations from './mutations';
+import pdf from './modules/pdf';
 
 const debug = process.env.NODE_ENV !== 'production'
 
 export default createStore({
   state: {
-    loadingMsg: '上傳中...',
     isLoading: false,
+    loadingMsg: '上傳中...',
   },
+  actions,
+  mutations,
   modules: {
     pdf,
   },

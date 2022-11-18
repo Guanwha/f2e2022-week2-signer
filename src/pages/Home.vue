@@ -11,7 +11,10 @@
       <div class="w-full h-[57vh] bg-white border-2 border-dashed border-gray rounded-[26px] p-8 relative">
         <img class="absolute top-[10%] inset-x-1/2 -translate-x-1/2 h-[28.6%]" src="@/assets/home/img_file.png" alt="image">
         <div class="z-10 absolute-center w-full flex-ccc gap-2 pt-16">
-          <button type="button" class="btn-anim rounded-2xl px-16 py-4 bg-gradient-primary text-white text-lg" >選擇檔案</button>
+          <label class="btn-anim rounded-2xl px-16 py-4 bg-gradient-primary text-white text-lg cursor-pointer" >
+            選擇檔案
+            <input type='file' class="hidden" @change='selectFile' :value='fileInputValue' accept=".jpg,.jpeg,.pdf"/>
+          </label>
           <p class="text-primary">(限10MB 內的PDF或JPG檔)</p>
         </div>
       </div>
@@ -36,10 +39,13 @@
         </div>
       </div>
       <!-- file region -->
-      <div class="absolute top-[13%] right-[15%] right-0 w-[32.6%] h-[52%] bg-white border-2 border-dashed border-gray rounded-[26px] p-8">
+      <div class="absolute top-[13%] right-[15%] w-[32.6%] h-[52%] bg-white border-2 border-dashed border-gray rounded-[26px] p-8">
         <img class="absolute top-[10%] inset-x-1/2 -translate-x-1/2 h-[28.6%]" src="@/assets/home/img_file.png" alt="image">
         <div class="z-10 absolute-center w-full flex-ccc gap-2 pt-16">
-          <button type="button" class="btn-anim rounded-2xl px-16 py-4 bg-gradient-primary text-white text-lg" >選擇檔案</button>
+          <label class="btn-anim rounded-2xl px-16 py-4 bg-gradient-primary text-white text-lg cursor-pointer" >
+            選擇檔案
+            <input type='file' class="hidden" @change='selectFile' :value='fileInputValue' accept=".jpg,.jpeg,.pdf"/>
+          </label>
           <p class="text-primary">(限10MB 內的PDF或JPG檔)</p>
         </div>
       </div>
@@ -63,6 +69,38 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useStore } from 'vuex'
+import { selectImageFile } from '@/utils/file';
+
+const store = useStore();
+
+// selected hero image
+// non-upload FILE: {
+//   name: "<圖檔名稱>.png",
+//   type: "image/png",
+//   size: 220939,
+//   preview: "data:image/png;base64,...",
+//
+//   lastModified: 1584459505672,
+//   lastModifiedDate: "<Time Object>",
+//   webkitRelativePath: ""
+// }
+const selectedFile = ref(null);
+const fileInputValue = ref(null);
+const selectFile = (e) => {
+  store.dispatch('startLoading', '上傳中...');
+  selectImageFile(e, 10000000, '10 MB', 1, '', true)
+    .then((file) => {
+      setTimeout(() => {
+        selectedFile.value = file;
+        store.dispatch('pdf/setCurrentPDF', file);
+        store.dispatch('endLoading');
+        // [TODO] go to next route
+      }, 1000);
+    })
+    .catch((err) => { console.log(err, false, false, true); });
+};
 </script>
 
 <style lang="scss" scoped>
