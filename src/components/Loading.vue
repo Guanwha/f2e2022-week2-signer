@@ -1,5 +1,5 @@
 <template>
-  <div class="z-50 absolute inset-0 bg-bg flex-ccc">
+  <div class="absolute inset-0 bg-bg flex-ccc">
     <div class="w-32 h-32" ref="bodyAnimation"/>
     <slot/>
     <div class="w-32 h-32"/>

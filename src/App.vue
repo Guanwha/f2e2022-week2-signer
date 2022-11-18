@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full relative">
     <router-view></router-view>
-    <Loading class="transition-all duration-500" :class="isLoading ? 'opacity-100' : 'opacity-0'">{{ loadingMsg }}</Loading>
+    <Loading class="transition-all duration-500" :class="isLoading ? 'z-50 opacity-100' : 'z-0 opacity-0'">{{ loadingMsg }}</Loading>
   </div>
 </template>
 
