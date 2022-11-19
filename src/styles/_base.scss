@@ -10,5 +10,12 @@
     scroll-behavior: smooth;
     @apply font-sans;
   }
+  * {
+    &:focus:not([disabled]) {
+      @apply outline-none;
+      @apply ring;
+      @apply ring-primary/30;
+    }
+  }
 }
 
