@@ -71,9 +71,11 @@
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { selectImageFile } from '@/utils/file';
 
 const store = useStore();
+const router = useRouter();
 
 // selected hero image
 // non-upload FILE: {
@@ -97,6 +99,7 @@ const selectFile = (e) => {
         store.dispatch('pdf/setCurrentPDF', file);
         store.dispatch('endLoading');
         // [TODO] go to next route
+        router.push('/sign/add');
       }, 1000);
     })
     .catch((err) => { console.log(err, false, false, true); });

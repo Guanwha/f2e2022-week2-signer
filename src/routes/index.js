@@ -1,10 +1,15 @@
 import * as VueRouter from 'vue-router'
 import Home from '@/pages/Home.vue';
+import SignManager from '@/pages/SignManager.vue';
 
 const routesBase = [
   {
     path: '/', name: 'home',
     component: Home,
+  },
+  {
+    path: '/sign/add', name: 'sign-manager',
+    component: SignManager,
   },
 ];
 

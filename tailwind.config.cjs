@@ -12,6 +12,8 @@ module.exports = {
         'gradient-bottom': '#077854FF',
         'orange': '#FFB800',
         'black': '#424242',
+        'blue': '#0014C7',
+        'red': '#CA0000',
         'gray': '#B7B7B7',
         'bg': '#F0F0F0',
       },
