@@ -10,6 +10,13 @@ const pdf = {
   SET_PDF: 'SET_PDF',
 };
 
+/** sign */
+const sign = {
+  ADD_SIGN: 'ADD_SIGN',
+  REMOVE_SIGN: 'REMOVE_SIGN',
+  SET_CURRENT_SIGN: 'SET_CURRENT_SIGN',
+};
+
 export {
-  ui, pdf,
+  ui, pdf, sign,
 };

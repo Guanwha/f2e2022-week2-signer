@@ -4,7 +4,6 @@ import { pdf } from '../types';
 // initial state
 const state = () => ({
   pdf: null,
-  signs: [],
 })
 
 // actions
@@ -23,9 +22,6 @@ const mutations = {
 
 // getters
 const getters = {
-  signs: (state, getters, rootState) => {
-    return state.signs;
-  },
 }
 
 export default {

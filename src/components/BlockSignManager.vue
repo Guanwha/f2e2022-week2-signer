@@ -26,18 +26,18 @@
       <!-- canvas -->
       <canvas id="canvas" class="w-full rounded-3xl bg-white"></canvas>
     </div>
-    <div class="w-full max-w-[600px] mt-12 rounded-3xl bg-white p-[10%] flex-ccc" v-if="isImportMode">
+    <div class="w-full max-w-[600px] mt-12 rounded-3xl bg-white p-[10%] flex-ccc" v-show="isImportMode">
       <!-- image preview -->
-      <!-- <p class="text-gray text-lg">請選擇檔案</p> -->
-      <label class="my-15 btn-anim text-gray text-lg cursor-pointer" >
-        請選擇檔案
-        <input type='file' class="hidden" @change='selectFile' :value='fileInputValue' accept=".jpg,.jpeg,.pdf"/>
+      <label class="my-15 btn-anim text-gray text-lg cursor-pointer">
+        <p v-show="!hasImagePreview">請選擇檔案</p>
+        <img v-show="hasImagePreview" id="selected-img" src="" alt="">
+        <input type='file' class="hidden" @change='selectImage' :value='fileInputValue' accept=".png,.svg"/>
       </label>
     </div>
     <!-- control buttons -->
     <div class="flex-rcc gap-3">
       <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-white border border-primary text-primary text-lg cursor-pointer">略過</button>
-      <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-gradient-primary text-white text-lg cursor-pointer" @click="createSign()">建立簽名</button>
+      <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-gradient-primary text-white text-lg cursor-pointer" @click="createSign()">{{ (isSignMode) ? '建立簽名' : '加入簽名' }}</button>
     </div>
     <!-- [TEST] -->
     <img id="show-image" src="" alt="save">
@@ -46,6 +46,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { selectImageFile } from '@/utils/file';
 
 /** tabs *****/
 const classTabActive = `bg-gradient-primary text-white`;
@@ -161,6 +162,35 @@ const createSign = () => {
   if (canvas.value) {
     image.value.src = canvas.value.toDataURL("image/png");
   }
+};
+
+/** load image */
+const fileInputValue = ref(null);
+// selected image
+// non-upload FILE: {
+//   name: "<圖檔名稱>.png",
+//   type: "image/png",
+//   size: 220939,
+//   preview: "data:image/png;base64,...",
+//
+//   lastModified: 1584459505672,
+//   lastModifiedDate: "<Time Object>",
+//   webkitRelativePath: ""
+// }
+const selectedImage = ref(null);
+const hasImagePreview = ref(false);
+onMounted(() => {
+  selectedImage.value = document.querySelector("#selected-img");
+});
+const selectImage = (e) => {
+  selectImageFile(e, 500000, '500 KB',)
+    .then((image) => {
+      setTimeout(() => {
+        selectedImage.value.src = image.preview;
+        hasImagePreview.value = true;
+      }, 1000);
+    })
+    .catch((err) => { console.log(err, false, false, true); });
 };
 
 </script>

@@ -23,7 +23,16 @@ const selectImageFile = (srcEvent, maxSize = 100000000000, maxSizeMsg = '100 GB'
       }
 
       // if file is image, generate preview data
-      if (/\.(jpe?g|pdf)$/i.test(file.name)) {
+      if (/\.(jpe?g|png|svg)$/i.test(file.name)) {
+        let reader = new FileReader();
+        reader.addEventListener("load", function () {
+          const outputFile = file;
+          outputFile.preview = reader.result;
+          resolve(outputFile);
+        }, false);
+        reader.readAsDataURL(file);
+      }
+      else if (/\.(pdf)$/i.test(file.name)) {
         resolve(file);
       }
       else {
