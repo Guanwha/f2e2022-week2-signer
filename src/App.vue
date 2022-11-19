@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full relative">
+  <div class="w-full min-w-[320px] h-full relative">
     <router-view></router-view>
     <Loading class="transition-all duration-500" :class="isLoading ? 'z-50 opacity-100' : '-z-10 opacity-0'">{{ loadingMsg }}</Loading>
   </div>
