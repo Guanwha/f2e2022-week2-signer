@@ -22,6 +22,9 @@ const mutations = {
 
 // getters
 const getters = {
+  currentPDF(state) {
+    return state.pdf;
+  },
 }
 
 export default {

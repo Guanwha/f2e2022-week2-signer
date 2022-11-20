@@ -36,7 +36,7 @@
     </div>
     <!-- control buttons -->
     <div class="flex-rcc gap-3">
-      <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-white border border-primary text-primary text-lg cursor-pointer">略過</button>
+      <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-white border border-primary text-primary text-lg cursor-pointer" @click="gotoNext()">略過</button>
       <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-gradient-primary text-white text-lg cursor-pointer" @click="createSign()">{{ (isSignMode) ? '建立簽名' : '加入簽名' }}</button>
     </div>
   </div>
@@ -47,6 +47,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { selectImageFile } from '@/utils/file';
+import { canvasMeetDOM } from '@/utils/oper';
 
 const store = useStore();
 const router = useRouter();
@@ -82,10 +83,7 @@ onMounted(() => {
   canvas.value = document.querySelector("#canvas");
   ctx.value = canvas.value.getContext("2d");
   const clearBtn = document.querySelector("#clear");
-  const canvasDomWidth = canvas.value.clientWidth;
-  const canvasDomHeight = canvas.value.clientHeight;
-  canvas.value.width = canvasDomWidth;
-  canvas.value.height = canvasDomHeight;
+  canvasMeetDOM(canvas.value);
 
   // 設定線條的相關數值
   ctx.value.lineWidth = 1;
@@ -206,6 +204,10 @@ const createSign = () => {
       router.push('/pdf/add');
     }, 1000);
   }
+};
+
+const gotoNext = () => {
+  router.push('/pdf/add');
 };
 
 </script>

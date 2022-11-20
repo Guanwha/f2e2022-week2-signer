@@ -33,7 +33,13 @@ const selectImageFile = (srcEvent, maxSize = 100000000000, maxSizeMsg = '100 GB'
         reader.readAsDataURL(file);
       }
       else if (/\.(pdf)$/i.test(file.name)) {
-        resolve(file);
+        let reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+        reader.addEventListener("load", function () {
+          // 獲取 readAsArrayBuffer 產生的結果，並用來渲染 PDF
+          const typedarray = new Uint8Array(reader.result);
+          resolve(typedarray);
+        }, false);
       }
       else {
         const msg = `${file.name} 格式不符合。`

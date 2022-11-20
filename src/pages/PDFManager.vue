@@ -6,7 +6,7 @@
         <button type="button" class="btn-anim rounded-xl">
           <img src="@/assets/pdf/btn_prev.svg" alt="previous page">
         </button>
-        <p>1 / 2</p>
+        <p>{{ `${pdfCurrentPage} / ${pdfTotalPage}` }}</p>
         <button type="button" class="btn-anim rounded-xl">
           <img src="@/assets/pdf/btn_next.svg" alt="next page">
         </button>
@@ -14,7 +14,9 @@
       <button type="button" class="btn-anim rounded-2xl px-7 py-4 bg-gradient-primary text-lg text-white">完成簽署</button>
     </section>
     <!-- pdf -->
-    <section></section>
+    <section class="w-full overflow-auto">
+      <canvas class="mx-auto"></canvas>
+    </section>
     <!-- edit operations -->
     <section class="w-full rounded-2xl bg-white p-2">
       <ul class="flex-rcc gap-2">
@@ -65,7 +67,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+// 因為是以外部引入的方式使用套件，因此需要做環境設定
+pdfjsLib.GlobalWorkerOptions.workerSrc = "https://mozilla.github.io/pdf.js/build/pdf.worker.js";
+
 
 /** edit modoe */
 const editMode = ref('sign');   // 'sign', 'check', 'date', 'word'
@@ -78,6 +85,43 @@ const classBtnEditModeTextInactive = computed(() => `text-gray`);
 const selectEditMode = (mode) => {
   editMode.value = mode;
 };
+
+
+/** pdf viewer */
+const canvas = ref(null);
+const ctx = ref(null);
+const pdfData = computed(() => useStore().getters['pdf/currentPDF']);
+const pdfCurrentPage = ref(0);
+const pdfTotalPage = ref(0);
+
+async function renderPDF(data) {
+  const pdfDoc = await pdfjsLib.getDocument(data).promise;
+  pdfCurrentPage.value = 1;
+  pdfTotalPage.value = pdfDoc.numPages;
+
+  const pdfPage = await pdfDoc.getPage(pdfCurrentPage.value);
+  let viewport = pdfPage.getViewport({ scale: 1 });
+  // viewport = pdfPage.getViewport({ scale: canvas.value.clientWidth / viewport.width });  // rescale viewport
+  canvas.value.width = viewport.width;
+  canvas.value.height = viewport.height;
+
+  pdfPage.render({
+    canvasContext: ctx.value,
+    viewport: viewport,
+  });
+}
+
+onMounted(() => {
+  canvas.value = document.querySelector("canvas");
+  ctx.value = canvas.value.getContext("2d");
+  if (pdfData.value) {
+    renderPDF(pdfData.value);
+  }
+  else {
+    useRouter().push('/');
+  }
+});
+
 </script>
 
 <style>
