@@ -20,13 +20,17 @@ const actions = {
 // mutations
 const mutations = {
   [sign.ADD_SIGN](state, image) {
-    if (image && image.preview) {
-      state.sign.push( file.preview );
+    console.log(image);
+    if (image) {
+      state.signs.push( image );
+      state.currentSignIdx = state.signs.length - 1;
+      // [TODO] update localStorage
     }
   },
   [sign.REMOVE_SIGN](state, idx) {
-    if (state.sign[idx]) {
-      state.sign.splice(idx, 1);
+    if (state.signs[idx]) {
+      state.signs.splice(idx, 1);
+      // [TODO] update localStorage
     }
   },
   [sign.SET_CURRENT_SIGN](state, idx) {
