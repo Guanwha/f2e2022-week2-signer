@@ -39,14 +39,17 @@
       <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-white border border-primary text-primary text-lg cursor-pointer">略過</button>
       <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-gradient-primary text-white text-lg cursor-pointer" @click="createSign()">{{ (isSignMode) ? '建立簽名' : '加入簽名' }}</button>
     </div>
-    <!-- [TEST] -->
-    <img id="show-image" src="" alt="save">
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import { selectImageFile } from '@/utils/file';
+
+const store = useStore();
+const router = useRouter();
 
 /** tabs *****/
 const classTabActive = `bg-gradient-primary text-white`;
@@ -153,17 +156,6 @@ onMounted(() => {
   clearBtn.addEventListener("click", reset);
 });
 
-// [TEST]
-const image = ref(null);
-onMounted(() => {
-  image.value = document.querySelector("#show-image");
-});
-const createSign = () => {
-  if (canvas.value) {
-    image.value.src = canvas.value.toDataURL("image/png");
-  }
-};
-
 /** load image */
 const fileInputValue = ref(null);
 // selected image
@@ -183,14 +175,37 @@ onMounted(() => {
   selectedImage.value = document.querySelector("#selected-img");
 });
 const selectImage = (e) => {
+  store.dispatch('startLoading', '讀檔中...');
   selectImageFile(e, 500000, '500 KB',)
     .then((image) => {
       setTimeout(() => {
         selectedImage.value.src = image.preview;
         hasImagePreview.value = true;
+        store.dispatch('endLoading');
       }, 1000);
     })
     .catch((err) => { console.log(err, false, false, true); });
+};
+
+/** add base64 image to store */
+const createSign = () => {
+  if (canvas.value) {
+    // image.value.src = canvas.value.toDataURL("image/png");
+    store.dispatch('startLoading', '簽名優化中...');
+
+    if (isSignMode) {
+      store.dispatch('sign/addSignFile', canvas.value.toDataURL("image/png"));
+    }
+    else if (isImportMode && hasImagePreview.value) {
+      store.dispatch('sign/addSignFile', selectedImage.value.src);
+    }
+
+    setTimeout(() => {
+      store.dispatch('endLoading');
+      // [TODO] go to next route
+      router.push('/pdf/add');
+    }, 1000);
+  }
 };
 
 </script>

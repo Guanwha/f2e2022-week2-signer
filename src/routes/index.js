@@ -1,6 +1,7 @@
 import * as VueRouter from 'vue-router'
 import Home from '@/pages/Home.vue';
 import SignManager from '@/pages/SignManager.vue';
+import PDFManager from '@/pages/PDFManager.vue';
 
 const routesBase = [
   {
@@ -10,6 +11,10 @@ const routesBase = [
   {
     path: '/sign/add', name: 'sign-manager',
     component: SignManager,
+  },
+  {
+    path: '/pdf/add', name: 'pdf-manager',
+    component: PDFManager,
   },
 ];
 
