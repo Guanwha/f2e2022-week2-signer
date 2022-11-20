@@ -92,7 +92,7 @@ const selectedFile = ref(null);
 const fileInputValue = ref(null);
 const selectFile = (e) => {
   store.dispatch('startLoading', '上傳中...');
-  selectImageFile(e, 10000000, '10 MB', 1, '', true)
+  selectImageFile(e, 10000000, '10 MB')
     .then((file) => {
       setTimeout(() => {
         selectedFile.value = file;
