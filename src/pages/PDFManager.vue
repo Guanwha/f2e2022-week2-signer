@@ -14,8 +14,8 @@
       <button type="button" class="btn-anim rounded-2xl px-7 py-4 bg-gradient-primary text-lg text-white">完成簽署</button>
     </section>
     <!-- pdf -->
-    <section class="w-full overflow-auto">
-      <canvas class="mx-auto"></canvas>
+    <section id="canvas-root" class="w-full overflow-auto">
+      <canvas id="canvas2" class="mx-auto"></canvas>
     </section>
     <!-- edit operations -->
     <section class="w-full rounded-2xl bg-white p-2">
@@ -70,6 +70,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { fabric } from 'fabric';
 // 因為是以外部引入的方式使用套件，因此需要做環境設定
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://mozilla.github.io/pdf.js/build/pdf.worker.js";
 
@@ -85,42 +86,65 @@ const classBtnEditModeTextInactive = computed(() => `text-gray`);
 const selectEditMode = (mode) => {
   editMode.value = mode;
 };
+const store = useStore();
 
 
 /** pdf viewer */
-const canvas = ref(null);
-const ctx = ref(null);
-const pdfData = computed(() => useStore().getters['pdf/currentPDF']);
+const pdfFile = computed(() => store.getters['pdf/currentPDF']);
 const pdfCurrentPage = ref(0);
 const pdfTotalPage = ref(0);
-
-async function renderPDF(data) {
-  const pdfDoc = await pdfjsLib.getDocument(data).promise;
-  pdfCurrentPage.value = 1;
-  pdfTotalPage.value = pdfDoc.numPages;
-
-  const pdfPage = await pdfDoc.getPage(pdfCurrentPage.value);
-  let viewport = pdfPage.getViewport({ scale: 1 });
-  // viewport = pdfPage.getViewport({ scale: canvas.value.clientWidth / viewport.width });  // rescale viewport
-  canvas.value.width = viewport.width;
-  canvas.value.height = viewport.height;
-
-  pdfPage.render({
-    canvasContext: ctx.value,
-    viewport: viewport,
-  });
-}
+let fabCanvas = null;
 
 onMounted(() => {
-  canvas.value = document.querySelector("canvas");
-  ctx.value = canvas.value.getContext("2d");
-  if (pdfData.value) {
-    renderPDF(pdfData.value);
+  if (pdfFile.value) {
+    pdfToCanvas();
   }
   else {
     useRouter().push('/');
   }
 });
+
+async function pdfToCanvas() {
+  const pdfCanvas = await renderPDF(pdfFile.value);
+  const pdfImage = new fabric.Image(pdfCanvas, { scaleX: 1, scaleY: 1 });
+
+  fabCanvas = new fabric.Canvas("canvas2");   // get element by id
+  fabCanvas.requestRenderAll();
+  fabCanvas.setWidth(pdfImage.width);
+  fabCanvas.setHeight(pdfImage.height);
+  fabCanvas.setBackgroundImage(pdfImage, fabCanvas.renderAll.bind(fabCanvas));
+  console.log(`canvas: ${fabCanvas.width} x ${fabCanvas.height}`);
+};
+
+const Base64Prefix = "data:application/pdf;base64,";
+async function renderPDF(file) {
+  // get pdf document
+  //== method 1 (file 需使用 readAsDataURL() 載入)
+  // const blob = atob(file.preview.substring(Base64Prefix.length));
+  // const pdfDoc = await pdfjsLib.getDocument({ data: blob }).promise;  // Using DocumentInitParameters object to load binary data.
+  //== method 2 (file 需使用 readAsArrayBuffer() 載入)
+  const pdfDoc = await pdfjsLib.getDocument(file).promise;
+
+  // get page
+  pdfCurrentPage.value = 1;
+  pdfTotalPage.value = pdfDoc.numPages;
+  const pdfPage = await pdfDoc.getPage(pdfCurrentPage.value);
+
+  // get viewport size
+  const canvasRoot = document.querySelector('#canvas-root');
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  let viewport = pdfPage.getViewport({ scale: 1 });
+  viewport = pdfPage.getViewport({ scale: (canvasRoot.clientWidth - 15) / viewport.width });  // rescale viewport
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+
+  // output pdf in canvas
+  return pdfPage.render({
+    canvasContext: ctx,
+    viewport: viewport,
+  }).promise.then(() => canvas);
+}
 
 </script>
 

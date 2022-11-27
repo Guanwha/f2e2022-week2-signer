@@ -26,20 +26,20 @@ const selectImageFile = (srcEvent, maxSize = 100000000000, maxSizeMsg = '100 GB'
       if (/\.(jpe?g|png|svg)$/i.test(file.name)) {
         let reader = new FileReader();
         reader.addEventListener("load", function () {
-          const outputFile = file;
-          outputFile.preview = reader.result;
-          resolve(outputFile);
+          file.preview = reader.result;
+          resolve(file);
         }, false);
+        reader.addEventListener("error", reject);
         reader.readAsDataURL(file);
       }
       else if (/\.(pdf)$/i.test(file.name)) {
         let reader = new FileReader();
-        reader.readAsArrayBuffer(file);
         reader.addEventListener("load", function () {
           // 獲取 readAsArrayBuffer 產生的結果，並用來渲染 PDF
           const typedarray = new Uint8Array(reader.result);
           resolve(typedarray);
         }, false);
+        reader.readAsArrayBuffer(file);
       }
       else {
         const msg = `${file.name} 格式不符合。`
