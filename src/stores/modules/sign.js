@@ -20,7 +20,6 @@ const actions = {
 // mutations
 const mutations = {
   [sign.ADD_SIGN](state, image) {
-    console.log(image);
     if (image) {
       state.signs.push( image );
       state.currentSignIdx = state.signs.length - 1;
