@@ -3,11 +3,11 @@
     <!-- page + send -->
     <section class="w-full bg-bg flex-rsbc gap-2">
       <div class="h-full px-4 py-3 rounded-2xl bg-white flex-rsbc gap-3">
-        <button type="button" class="btn-anim rounded-xl">
+        <button type="button" class="btn-anim rounded-xl" @click="prevPage()">
           <img src="@/assets/pdf/btn_prev.svg" alt="previous page">
         </button>
         <p>{{ `${pdfCurrentPage} / ${pdfTotalPage}` }}</p>
-        <button type="button" class="btn-anim rounded-xl">
+        <button type="button" class="btn-anim rounded-xl" @click="nextPage()">
           <img src="@/assets/pdf/btn_next.svg" alt="next page">
         </button>
       </div>
@@ -91,12 +91,14 @@ const store = useStore();
 
 /** pdf viewer */
 const pdfFile = computed(() => store.getters['pdf/currentPDF']);
+let pdfDoc = null;
 const pdfCurrentPage = ref(0);
 const pdfTotalPage = ref(0);
 let fabCanvas = null;
 
 onMounted(() => {
   if (pdfFile.value) {
+    fabCanvas = new fabric.Canvas("canvas2");   // get element by id
     pdfToCanvas();
   }
   else {
@@ -105,10 +107,26 @@ onMounted(() => {
 });
 
 async function pdfToCanvas() {
-  const pdfCanvas = await renderPDF(pdfFile.value);
+  // pdf file => pdf document => pdf page => viewport => canvas
+  await pdfToDoc(pdfFile.value);
+  await renderPDFPage();
+};
+
+// const Base64Prefix = "data:application/pdf;base64,";
+async function pdfToDoc(file) {
+  // get pdf document
+  //== method 1 (file 需使用 readAsDataURL() 載入)
+  // const blob = atob(file.preview.substring(Base64Prefix.length));
+  // const pdfDoc = await pdfjsLib.getDocument({ data: blob }).promise;  // Using DocumentInitParameters object to load binary data.
+  //== method 2 (file 需使用 readAsArrayBuffer() 載入)
+  pdfDoc = await pdfjsLib.getDocument(file).promise;
+  pdfTotalPage.value = pdfDoc.numPages;
+}
+
+async function renderPDFPage(page = 1) {
+  const pdfCanvas = await docToCanvas(page);
   const pdfImage = new fabric.Image(pdfCanvas, { scaleX: 1, scaleY: 1 });
 
-  fabCanvas = new fabric.Canvas("canvas2");   // get element by id
   fabCanvas.requestRenderAll();
   fabCanvas.setWidth(pdfImage.width);
   fabCanvas.setHeight(pdfImage.height);
@@ -116,18 +134,11 @@ async function pdfToCanvas() {
   console.log(`canvas: ${fabCanvas.width} x ${fabCanvas.height}`);
 };
 
-const Base64Prefix = "data:application/pdf;base64,";
-async function renderPDF(file) {
-  // get pdf document
-  //== method 1 (file 需使用 readAsDataURL() 載入)
-  // const blob = atob(file.preview.substring(Base64Prefix.length));
-  // const pdfDoc = await pdfjsLib.getDocument({ data: blob }).promise;  // Using DocumentInitParameters object to load binary data.
-  //== method 2 (file 需使用 readAsArrayBuffer() 載入)
-  const pdfDoc = await pdfjsLib.getDocument(file).promise;
+async function docToCanvas(page) {
+  if (!pdfDoc) return;
 
   // get page
-  pdfCurrentPage.value = 1;
-  pdfTotalPage.value = pdfDoc.numPages;
+  pdfCurrentPage.value = page;
   const pdfPage = await pdfDoc.getPage(pdfCurrentPage.value);
 
   // get viewport size
@@ -146,6 +157,18 @@ async function renderPDF(file) {
   }).promise.then(() => canvas);
 }
 
+/** switch page */
+const prevPage = () => {
+  pdfCurrentPage.value = (pdfCurrentPage.value <= 1) ? 1 : pdfCurrentPage.value-1;
+  refreshPDFPage();
+};
+const nextPage = () => {
+  pdfCurrentPage.value = (pdfCurrentPage.value >= pdfTotalPage.value) ? pdfTotalPage.value : pdfCurrentPage.value+1;
+  refreshPDFPage();
+};
+async function refreshPDFPage() {
+  await renderPDFPage(pdfCurrentPage.value);
+};
 
 /** sign */
 const signData = computed(() => store.getters['sign/currentSign']);
