@@ -3,9 +3,9 @@
 ## [Demo](https://guanwha.github.io/f2e2022-week2-signer/)
 
 ## Features
-- 簽名 (尚未加入儲存)
+- 簽名
 - PDF viewer
-- 簽名功能 (未完成)
+- 簽名功能 (手寫完成；匯入圖片尚有問題)
 - 文字功能 (未完成)
 - 日期功能 (未完成)
 - 勾選功能 (未完成)
@@ -21,7 +21,7 @@
 
 ## Library / CDN
 - mozilla/pdf.js
-- 
+- fabric.js 5.2.4
 
 ## Build Tool
 - Vite 3.2.3
