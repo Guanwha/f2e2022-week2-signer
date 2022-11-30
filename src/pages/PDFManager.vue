@@ -16,6 +16,7 @@
     <!-- pdf -->
     <section id="canvas-root" class="w-full overflow-auto relative">
       <canvas id="canvas2" class="mx-auto"></canvas>
+      <img id="delete-obj-btn" src="@/assets/sign/btn_delete_x.svg" class="absolute cursor-pointer" :style="styleDeleteObjBtn" @click="deleteActiveObject()"/>
     </section>
     <!-- edit operations -->
     <section class="w-full rounded-2xl bg-white p-2">
@@ -110,6 +111,7 @@ onMounted(() => {
   if (pdfFile.value) {
     fabCanvas = new fabric.Canvas("canvas2");   // get element by id
     pdfToCanvas();
+    registerListeners();
   }
   else {
     useRouter().push('/');
@@ -179,6 +181,45 @@ const nextPage = () => {
 };
 async function refreshPDFPage() {
   await renderPDFPage(pdfCurrentPage.value);
+};
+
+
+/** fabric canvas objejct operation */
+function registerListeners() {
+  // http://fabricjs.com/events
+  fabCanvas.on('selection:created', function(e) {
+    addDeleteObjBtn(e);
+  });
+  fabCanvas.on('selection:updated', function(e) {
+    addDeleteObjBtn(e);
+  });
+  fabCanvas.on('object:moving', function(e) {
+    removeDeleteObjBtn();
+  });
+  fabCanvas.on('object:modified', function(e) {
+    addDeleteObjBtn(e);
+  });
+  fabCanvas.on('selection:cleared', function(e) {
+    removeDeleteObjBtn();
+  });
+};
+
+// delete objject button
+const styleDeleteObjBtn = ref('top:0; left:0; display:none;');
+function addDeleteObjBtn(e) {
+  if (!e && !e.selected && !e.target) return;
+
+  const target = (e.selected?.[0]) ? (e.selected[0]) : e.target;
+	let btnLeft = target.aCoords.tl.x - 12;
+	let btnTop = target.aCoords.tl.y - 12;
+  styleDeleteObjBtn.value = `top:${btnTop}px; left:${btnLeft}px;`;
+};
+function removeDeleteObjBtn(){
+  styleDeleteObjBtn.value ='top:0; left:0; display:none;';
+};
+const deleteActiveObject = () => {
+  const target = fabCanvas.getActiveObject();
+  fabCanvas.remove(target);
 };
 
 
