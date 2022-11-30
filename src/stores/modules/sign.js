@@ -3,7 +3,7 @@ import { sign } from '../types';
 
 // initial state
 const state = () => ({
-  signs: [],
+  signs: JSON.parse(localStorage.getItem('sg')) || [],
   currentSignIdx: null,
 });
 
@@ -12,8 +12,11 @@ const actions = {
   addSignFile(context, image) {
     context.commit(sign.ADD_SIGN, image);
   },
-  removeSign(context, idx) {
-    context.commit(sign.REMOVE_SIGN, idx);
+  selectSign(context, idx) {
+    context.commit(sign.SET_CURRENT_SIGN, idx);
+  },
+  deleteSign(context, idx) {
+    context.commit(sign.DELETE_SIGN, idx);
   },
 };
 
@@ -23,13 +26,13 @@ const mutations = {
     if (image) {
       state.signs.push( image );
       state.currentSignIdx = state.signs.length - 1;
-      // [TODO] update localStorage
+      localStorage.setItem('sg', JSON.stringify(state.signs));
     }
   },
-  [sign.REMOVE_SIGN](state, idx) {
+  [sign.DELETE_SIGN](state, idx) {
     if (state.signs[idx]) {
       state.signs.splice(idx, 1);
-      // [TODO] update localStorage
+      localStorage.setItem('sg', JSON.stringify(state.signs));
     }
   },
   [sign.SET_CURRENT_SIGN](state, idx) {

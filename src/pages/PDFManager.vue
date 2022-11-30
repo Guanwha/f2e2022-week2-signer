@@ -14,7 +14,7 @@
       <button type="button" class="btn-anim rounded-2xl px-7 py-4 bg-gradient-primary text-lg text-white">完成簽署</button>
     </section>
     <!-- pdf -->
-    <section id="canvas-root" class="w-full overflow-auto">
+    <section id="canvas-root" class="w-full overflow-auto relative">
       <canvas id="canvas2" class="mx-auto"></canvas>
     </section>
     <!-- edit operations -->
@@ -63,6 +63,12 @@
         </li>
       </ul>
     </section>
+    <!-- dialog -->
+    <DialogSignList
+      v-if="showSignListDialog"
+      @close="showSignListDialog = false"
+      @selected="selectSign()"
+    />
   </div>
 </template>
 
@@ -71,11 +77,12 @@ import { ref, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { fabric } from 'fabric';
+import DialogSignList from '@/components/DialogSignList.vue';
 // 因為是以外部引入的方式使用套件，因此需要做環境設定
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://mozilla.github.io/pdf.js/build/pdf.worker.js";
 
 
-/** edit modoe */
+/** edit mode */
 const editMode = ref('sign');   // 'sign', 'check', 'date', 'word'
 const classBtnEditModeLi = computed(() => `flex-ccc gap-1 text-xs`);
 const classBtnEditMode = computed(() => `btn-anim rounded-lg p-2`);
@@ -87,6 +94,9 @@ const selectEditMode = (mode) => {
   editMode.value = mode;
 };
 const store = useStore();
+
+/** dialog */
+const showSignListDialog = ref(false);
 
 
 /** pdf viewer */
@@ -157,6 +167,7 @@ async function docToCanvas(page) {
   }).promise.then(() => canvas);
 }
 
+
 /** switch page */
 const prevPage = () => {
   pdfCurrentPage.value = (pdfCurrentPage.value <= 1) ? 1 : pdfCurrentPage.value-1;
@@ -170,9 +181,14 @@ async function refreshPDFPage() {
   await renderPDFPage(pdfCurrentPage.value);
 };
 
+
 /** sign */
 const signData = computed(() => store.getters['sign/currentSign']);
 const addSign = () => {
+  showSignListDialog.value = true;
+};
+const selectSign = () => {
+  showSignListDialog.value = false;
   if (!signData.value) return;
   fabric.Image.fromURL(signData.value, function (image) {
     image.top = 0;
@@ -181,6 +197,12 @@ const addSign = () => {
     fabCanvas.add(image);
   });
 };
+
+
+/** check */
+/** date */
+/** text */
+
 
 </script>
 

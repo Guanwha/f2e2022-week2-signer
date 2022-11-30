@@ -13,7 +13,7 @@ const pdf = {
 /** sign */
 const sign = {
   ADD_SIGN: 'ADD_SIGN',
-  REMOVE_SIGN: 'REMOVE_SIGN',
+  DELETE_SIGN: 'DELETE_SIGN',
   SET_CURRENT_SIGN: 'SET_CURRENT_SIGN',
 };
 

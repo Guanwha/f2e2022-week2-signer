@@ -16,6 +16,7 @@ module.exports = {
         'red': '#CA0000',
         'gray': '#B7B7B7',
         'bg': '#F0F0F0',
+        'mask': '#BABABA78',
       },
       spacing: {
         '15': '60px',

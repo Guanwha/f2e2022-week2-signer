@@ -51,6 +51,7 @@ import { canvasMeetDOM } from '@/utils/oper';
 
 const store = useStore();
 const router = useRouter();
+const emit = defineEmits(['close']);
 
 /** tabs *****/
 const classTabActive = `bg-gradient-primary text-white`;
@@ -179,10 +180,10 @@ const selectImage = (e) => {
       setTimeout(() => {
         selectedImage.value.src = image.preview;
         hasImagePreview.value = true;
-        store.dispatch('endLoading');
       }, 1000);
     })
-    .catch((err) => { console.log(err, false, false, true); });
+    .catch((err) => console.log(err, false, false, true))
+    .finally(() => store.dispatch('endLoading'));
 };
 
 /** add base64 image to store */
@@ -207,6 +208,7 @@ const createSign = () => {
 };
 
 const gotoNext = () => {
+  emit('close');
   router.push('/pdf/add');
 };
 
