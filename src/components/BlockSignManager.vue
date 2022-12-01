@@ -192,10 +192,10 @@ const createSign = () => {
     // image.value.src = canvas.value.toDataURL("image/png");
     store.dispatch('startLoading', '簽名優化中...');
 
-    if (isSignMode) {
+    if (isSignMode.value) {
       store.dispatch('sign/addSignFile', canvas.value.toDataURL("image/png"));
     }
-    else if (isImportMode && hasImagePreview.value) {
+    else if (isImportMode.value && hasImagePreview.value) {
       store.dispatch('sign/addSignFile', selectedImage.value.src);
     }
 
