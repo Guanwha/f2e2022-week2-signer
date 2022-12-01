@@ -15,7 +15,7 @@
             選擇檔案
             <input type='file' class="hidden" @change='selectFile' :value='fileInputValue' accept=".jpg,.jpeg,.pdf"/>
           </label>
-          <p class="text-primary">(限10MB 內的PDF或JPG檔)</p>
+          <p class="text-primary">(限 10MB 內的 PDF 檔)</p>
         </div>
       </div>
     </section>
@@ -46,7 +46,7 @@
             選擇檔案
             <input type='file' class="hidden" @change='selectFile' :value='fileInputValue' accept=".jpg,.jpeg,.pdf"/>
           </label>
-          <p class="text-primary">(限10MB 內的PDF或JPG檔)</p>
+          <p class="text-primary">(限 10MB 內的 PDF 檔)</p>
         </div>
       </div>
     </section>
@@ -91,7 +91,7 @@ const router = useRouter();
 const selectedFile = ref(null);
 const fileInputValue = ref(null);
 const selectFile = (e) => {
-  store.dispatch('startLoading', '上傳中...');
+  store.dispatch('startLoading', '檔案讀取中...');
   selectImageFile(e, 10000000, '10 MB')
     .then((file) => {
       setTimeout(() => {

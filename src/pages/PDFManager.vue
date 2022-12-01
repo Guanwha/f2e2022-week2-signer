@@ -32,7 +32,7 @@
           </button>
           <p :class="(editMode === 'sign') ? classBtnEditModeTextActive : classBtnEditModeTextInactive">簽名</p>
         </li>
-        <li :class=classBtnEditModeLi @click="selectEditMode('check')">
+        <!-- <li :class=classBtnEditModeLi @click="selectEditMode('check')">
           <button type="button" :class="[classBtnEditMode, (editMode === 'check') ? classBtnEditModeIconActive : classBtnEditModeIconInactive]">
             <svg width="24" height="24" viewBox="0 0 25 25" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -42,7 +42,7 @@
             </svg>
           </button>
           <p :class="(editMode === 'check') ? classBtnEditModeTextActive : classBtnEditModeTextInactive">勾選</p>
-        </li>
+        </li> -->
         <li :class=classBtnEditModeLi @click="selectEditMode('date')">
           <button type="button" :class="[classBtnEditMode, (editMode === 'date') ? classBtnEditModeIconActive : classBtnEditModeIconInactive]">
             <svg width="24" height="24" viewBox="0 0 25 25" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
