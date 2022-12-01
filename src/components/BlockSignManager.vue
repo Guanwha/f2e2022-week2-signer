@@ -36,7 +36,7 @@
     </div>
     <!-- control buttons -->
     <div class="flex-rcc gap-3">
-      <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-white border border-primary text-primary text-lg cursor-pointer" @click="gotoNext()">略過</button>
+      <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-white border border-primary text-primary text-lg cursor-pointer" @click="gotoNext()">{{ (from === 'flow') ? '略過' : '取消' }}</button>
       <button type="button" class="btn-anim rounded-2xl px-10 py-4 bg-gradient-primary text-white text-lg cursor-pointer" @click="createSign()">{{ (isSignMode) ? '建立簽名' : '加入簽名' }}</button>
     </div>
   </div>
@@ -51,6 +51,7 @@ import { canvasMeetDOM } from '@/utils/oper';
 
 const store = useStore();
 const router = useRouter();
+const props = defineProps(['from']);
 const emit = defineEmits(['close']);
 
 /** tabs *****/
@@ -201,15 +202,18 @@ const createSign = () => {
 
     setTimeout(() => {
       store.dispatch('endLoading');
-      // [TODO] go to next route
-      router.push('/pdf/add');
+      gotoNext();
     }, 1000);
   }
 };
 
 const gotoNext = () => {
-  emit('close');
-  router.push('/pdf/add');
+  if (props.from === 'list') {
+    emit('close');            // back to sign list
+  }
+  else if (props.from === 'flow') {
+    router.push('/pdf/add');  // go to pdf manager route
+  }
 };
 
 </script>

@@ -21,7 +21,7 @@
     </div>
     <!-- sign manager block -->
     <div v-else-if="mode === 'create'" class="w-96">
-      <BlockSignManager class="rounded-2xl" @close="mode = 'select'"/>
+      <BlockSignManager class="rounded-2xl" from='list' @close="mode = 'select'"/>
     </div>
   </div>
 </template>

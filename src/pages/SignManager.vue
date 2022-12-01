@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full">
-    <BlockSignManager/>
+    <BlockSignManager from='flow'/>
   </div>
 </template>
 
